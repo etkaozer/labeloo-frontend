@@ -1217,25 +1217,35 @@ const reassignSelectedTasks = async () => {
 }
 
 // Task actions
-const handleAssignTask = (task: Task) => {
-  // TODO: Implement task assignment logic
-  console.log('Assign task:', task.id)
+const { assignToSelf } = useTaskActions()
+
+const handleAssignTask = async (task: Task) => {
+  try {
+    const res = await assignToSelf(task.id)
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({})) as { error?: string }
+      throw new Error(body.error || `Failed to assign task (${res.status})`)
+    }
+    toast.add({
+      title: 'Task Assigned',
+      description: `Task #${task.id} is now assigned to you`,
+      color: 'success'
+    })
+    await fetchTasks()
+  } catch (err) {
+    toast.add({
+      title: 'Assignment Failed',
+      description: err instanceof Error ? err.message : 'Failed to assign task',
+      color: 'error'
+    })
+  }
 }
 
-const handleViewTask = (task: Task) => {
-  // TODO: Implement task viewing logic
-  console.log('View task:', task.id)
-}
-
-const handleContinueTask = (task: Task) => {
-  // TODO: Implement continue annotation logic
-  console.log('Continue task:', task.id)
-}
-
-const handleReviewTask = (task: Task) => {
-  // TODO: Implement task review logic
-  console.log('Review task:', task.id)
-}
+// Viewing, continuing and reviewing a task all open it in the annotation
+// workspace, which loads the task data and any existing annotations.
+const handleViewTask = (task: Task) => navigateToAnnotate(task.id)
+const handleContinueTask = (task: Task) => navigateToAnnotate(task.id)
+const handleReviewTask = (task: Task) => navigateToAnnotate(task.id)
 
 // Bulk task assignment handlers
 const handleTasksAssigned = async (taskIds: number[]) => {
