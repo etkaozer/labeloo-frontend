@@ -11,7 +11,7 @@ RUN apt-get update \
 
 # Install dependencies first for better layer caching.
 COPY package.json pnpm-lock.yaml .npmrc ./
-RUN pnpm install
+RUN pnpm install --frozen-lockfile
 
 # App source.
 COPY . .
