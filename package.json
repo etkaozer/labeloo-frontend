@@ -29,5 +29,13 @@
     "@iconify-json/lucide": "^1.2.82",
     "@types/node": "^25.0.3",
     "vitest": "^4.1.8"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "@parcel/watcher",
+      "@tailwindcss/oxide",
+      "vue-demi"
+    ]
   }
 }

@@ -6,11 +6,12 @@ WORKDIR /app
 RUN apt-get update \
     && apt-get install -y --no-install-recommends ca-certificates \
     && rm -rf /var/lib/apt/lists/* \
-    && corepack enable
+    && corepack enable \
+    && corepack prepare pnpm@9.15.9 --activate
 
 # Install dependencies first for better layer caching.
 COPY package.json pnpm-lock.yaml .npmrc ./
-RUN pnpm install --frozen-lockfile
+RUN pnpm install
 
 # App source.
 COPY . .
